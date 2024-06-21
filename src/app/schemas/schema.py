@@ -1,4 +1,3 @@
-import datetime
 from typing import Union, Dict, List, Optional
 
 from pydantic import BaseModel
@@ -23,5 +22,5 @@ class SendingError(BaseModel):
     subscription: Subscription
     message: Message
     description: str
-    time: datetime.datetime
+    time: str
 

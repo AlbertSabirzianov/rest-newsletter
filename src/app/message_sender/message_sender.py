@@ -44,7 +44,7 @@ class MessageSender:
                             subscription=subscription,
                             message=message,
                             description=str(err),
-                            time=datetime.datetime.now()
+                            time=datetime.datetime.now().isoformat()
                         )
                     )
                     if message_settings.is_repeat_sending:
