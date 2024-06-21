@@ -1,1 +1,9 @@
 venv
+src/__pycache__
+__pycache__
+src/app/__pycache__
+src/app/api/__pycache__
+src/app/message_sender/__pycache__
+src/app/repositories/__pycache__
+src/app/schemas/__pycache__
+src/app/settings/__pycache__
