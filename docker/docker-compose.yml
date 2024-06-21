@@ -1,0 +1,12 @@
+services:
+  app:
+    build:
+      context: ./../src/.
+      dockerfile: ../docker/Dockerfile
+    ports:
+      - 8000:8000
+    volumes:
+      - ./../src/data:/app/data
+
+  redis:
+    image: redis

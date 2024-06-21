@@ -2,7 +2,7 @@ from typing import List
 
 from fastapi import APIRouter, Response, status
 
-
+from ..service.redis_connector import redis_connector
 from ..repositories.sending_error_repository import sending_error_repository
 from ..repositories.subjects_repository import subject_repository
 from ..repositories.subscription_repository import subscription_repository
@@ -65,12 +65,15 @@ def delete_subscription(subscription: Subscription):
 
 # sending errors
 @api_router.get("/sending_errors", response_model=List[SendingError])
-async def get_all_sending_errors():
+def get_all_sending_errors():
     return sending_error_repository.get_all_objects()
 
-#
-# # messages
-# @api_router.post("/message", response_model=Message)
-# async def post_message(message: Message):
-#     await message_queue.put(message)
-#     return message
+
+# messages
+@api_router.post("/message")
+async def post_message(message: Message, response: Response):
+    if not subject_repository.get_subject_by_name(message.subject_name):
+        response.status_code = status.HTTP_400_BAD_REQUEST
+        return NOT_EXISTS
+    await redis_connector.send_new_message(message)
+    return CREATED

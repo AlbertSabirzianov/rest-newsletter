@@ -21,8 +21,8 @@ class SubjectRepository(BaseRepository):
             return None
 
     def delete_subject_by_name(self, name: str) -> None:
-        self.objects = [obj for obj in self.objects if obj.name != name]
-        self.dump_data()
+        objects = [obj for obj in self.objects if obj.name != name]
+        self.dump_data(objects)
 
 
 subject_repository = SubjectRepository()

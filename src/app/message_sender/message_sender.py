@@ -1,30 +1,34 @@
 import asyncio
 import datetime
+import json
+import logging
 
 import aiohttp
+import aioredis
 
-from src.app.schemas.schema import Message, Subscription, SendingError
-from src.app.repositories.subscription_repository import subscription_repository
-from src.app.repositories.sending_error_repository import sending_error_repository
 from .servise import send_message_to_subscription
 from .settings import message_settings
+from ..repositories.sending_error_repository import sending_error_repository
+from ..repositories.subscription_repository import subscription_repository
+from ..schemas.schema import Message, Subscription, SendingError
+from ..settings.settings import redis_settings
 
 
 class MessageSender:
 
-    def __init__(self, message_queue: asyncio.Queue):
-        self.message_queue: asyncio.Queue[Message] = message_queue
+    def __init__(self):
+        self.send_queue: asyncio.Queue[Message] = asyncio.Queue()
         self.repeat_queue: asyncio.Queue[Message] = asyncio.Queue()
 
     async def repeat_send(self):
         while True:
             message = await self.repeat_queue.get()
             await asyncio.sleep(message_settings.timeout_to_repeat_in_seconds)
-            await self.message_queue.put(message)
+            await self.send_queue.put(message)
 
     async def send(self):
         while True:
-            message = await self.message_queue.get()
+            message = await self.send_queue.get()
             subscriptions: list[Subscription] = subscription_repository.get_subscriptions_by_subject_name(
                 message.subject_name
             )
@@ -46,9 +50,25 @@ class MessageSender:
                     if message_settings.is_repeat_sending:
                         await self.repeat_queue.put(message)
 
-    async def run(self):
-        await asyncio.gather(
-            self.send(),
-            self.repeat_send()
-        )
+    async def listen_new_messages(self):
+        redis = await aioredis.from_url(redis_settings.redis_url)
+        pubsub = redis.pubsub()
+        await pubsub.subscribe(redis_settings.chanel_name)
+        while True:
+            new_message = await pubsub.get_message(ignore_subscribe_messages=True)
+            if new_message:
+                logging.warning(str(new_message))
+                await self.send_queue.put(
+                    Message(**json.loads(new_message["data"]))
+                )
+
+    def run(self):
+        loop = asyncio.get_event_loop()
+        loop.create_task(self.listen_new_messages())
+        loop.create_task(self.send())
+        loop.create_task(self.repeat_send())
+        loop.run_forever()
+
+
+message_sender = MessageSender()
 

@@ -7,3 +7,4 @@ src/app/message_sender/__pycache__
 src/app/repositories/__pycache__
 src/app/schemas/__pycache__
 src/app/settings/__pycache__
+.idea
