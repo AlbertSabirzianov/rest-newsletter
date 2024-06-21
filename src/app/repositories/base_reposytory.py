@@ -29,9 +29,11 @@ class BaseRepository:
             )
 
     def set_object(self, obj: BaseModel) -> None:
+        new_data = self.objects
+        new_data.append(obj)
         with open(self.DATA_PATH, "w") as file:
             json.dump(
-                [sub.model_dump() for sub in self.objects] + [obj.model_dump()],
+                [sub.model_dump() for sub in new_data],
                 file
             )
 

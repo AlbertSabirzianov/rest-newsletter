@@ -7,7 +7,7 @@ import aiohttp
 import aioredis
 
 from .servise import send_message_to_subscription
-from .settings import message_settings
+from ..settings.settings import message_settings
 from ..repositories.sending_error_repository import sending_error_repository
 from ..repositories.subscription_repository import subscription_repository
 from ..schemas.schema import Message, Subscription, SendingError

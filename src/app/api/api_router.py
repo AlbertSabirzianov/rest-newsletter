@@ -2,7 +2,7 @@ from typing import List
 
 from fastapi import APIRouter, Response, status
 
-from ..service.redis_connector import redis_connector
+from ..redis_connector.redis_connector import redis_connector
 from ..repositories.sending_error_repository import sending_error_repository
 from ..repositories.subjects_repository import subject_repository
 from ..repositories.subscription_repository import subscription_repository
