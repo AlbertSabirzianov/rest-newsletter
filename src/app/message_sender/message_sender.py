@@ -3,9 +3,9 @@ import datetime
 
 import aiohttp
 
-from src.schemas.schema import Message, Subscription, Subject, SendingError
-from src.repositories.subscription_repository import subscription_repository
-from src.repositories.sending_error_repository import sending_error_repository
+from src.app.schemas.schema import Message, Subscription, SendingError
+from src.app.repositories.subscription_repository import subscription_repository
+from src.app.repositories.sending_error_repository import sending_error_repository
 from .servise import send_message_to_subscription
 from .settings import message_settings
 

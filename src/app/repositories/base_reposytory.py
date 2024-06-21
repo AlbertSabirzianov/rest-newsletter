@@ -16,12 +16,15 @@ class BaseRepository:
     def get_all_objects(self) -> List[BaseModel]:
         return self.objects
 
-    def set_object(self, obj: BaseModel) -> None:
-        self.objects.append(obj)
+    def dump_data(self):
         with open(self.DATA_PATH, "w") as file:
             json.dump(
                 [sub.model_dump() for sub in self.objects],
                 file
             )
+
+    def set_object(self, obj: BaseModel) -> None:
+        self.objects.append(obj)
+        self.dump_data()
 
 

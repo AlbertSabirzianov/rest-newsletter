@@ -1,6 +1,6 @@
 import aiohttp
 
-from ..schemas.schema import Message, Subscription
+from src.app.schemas.schema import Message, Subscription
 
 
 async def send_message_to_subscription(message: Message, subscription: Subscription):
