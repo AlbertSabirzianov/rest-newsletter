@@ -1,8 +1,6 @@
 services:
   app:
-    build:
-      context: ./../src/.
-      dockerfile: ../docker/Dockerfile
+    image: albertsabirzianov/rest-newsletter:latest
     ports:
       - 8000:8000
     volumes:
